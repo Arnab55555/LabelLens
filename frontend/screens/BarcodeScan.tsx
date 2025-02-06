@@ -1,10 +1,14 @@
 import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { Camera, Code, useCameraDevice, useCameraPermission, useCodeScanner } from 'react-native-vision-camera'
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../App';
 
-const BarcodeScan = () => {
+type BarcodeScanProps=NativeStackScreenProps<RootStackParamList,'BarcodeScan'>
+const BarcodeScan = ({navigation}:BarcodeScanProps) => {
   const { hasPermission, requestPermission } = useCameraPermission()
   const device = useCameraDevice('back')
+  const [scanned, setScanned] = useState(false);
   console.log("Barcode Scanner is opened")
   React.useEffect(()=>{
     requestPermission();
@@ -13,9 +17,10 @@ const BarcodeScan = () => {
   const codeScanner = useCodeScanner({
     codeTypes: ['qr', 'ean-13'],
     onCodeScanned: (codes:Code[]) => { 
-      console.log("Barcode scanned event triggered!", codes);
-      if (codes.length > 0) {
-        console.log(`Scanned ${codes[0].value} codes!`);
+      if (!scanned && codes.length > 0 && codes[0]?.value) {
+        setScanned(true);
+        console.log("Barcode Scanned: ", codes[0].value);
+        navigation.navigate("ProductScreen", { ProductId: codes[0].value });
       }
     }
   })

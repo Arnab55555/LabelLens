@@ -6,12 +6,14 @@ import Home from './screens/Home';
 import BarcodeScan from './screens/BarcodeScan';
 import ProductSearch from './screens/ProductSearch';
 import AddProduct from './screens/AddProduct';
+import ProductScreen from './screens/ProductScreen';
 
 export type RootStackParamList = {
     Home: undefined;
     BarcodeScan: undefined;
     ProductSearch:undefined;
     AddProduct:undefined;
+    ProductScreen:{ ProductId:string };
   };
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
@@ -30,6 +32,7 @@ function App(): React.JSX.Element {
             <Stack.Screen name="BarcodeScan" component={BarcodeScan}/>
             <Stack.Screen name="ProductSearch" component={ProductSearch}/>
             <Stack.Screen name="AddProduct" component={AddProduct}/>
+            <Stack.Screen name="ProductScreen" component={ProductScreen}/>
         </Stack.Navigator>
     </NavigationContainer>
     

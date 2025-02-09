@@ -84,7 +84,7 @@ const port = 3000;
 app.use(express.json()); // to parse JSON requests
 
 // MongoDB connection URI
-const uri = 'mongodb+srv://shahiliyas289:admin@cluster0.pltxb.mongodb.net/'; // Replace with your actual MongoDB URI
+const uri = 'mongodb://localhost:27017'; // Replace with your actual MongoDB URI
 
 // MongoDB client
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -122,7 +122,7 @@ app.get('/searchProductBarcode', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 app.listen(PORT, () => {
     console.log('Server is running on port 3000');
 });

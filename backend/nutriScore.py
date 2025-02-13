@@ -262,4 +262,4 @@ def process_csv_file(input_csv, output_csv):
             writer.writerow(row)
 
 # Example usage
-process_csv_file('output_hsr.csv', 'LatestNutriScore2.csv')
+process_csv_file('output_hsr.csv', 'LatestNutriScore.csv')

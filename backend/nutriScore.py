@@ -226,33 +226,40 @@ def process_csv_file(input_csv, output_csv):
                 row['nutriscore_score_final'] = 'N/A'
                 row['nutriscore_grade_final'] = 'Nutri-Score is not applicable'
             else:
-                nutriscore_data_ref = {
-                    'energy': safe_float(row.get('energy_100g')),
-                    'sugars': safe_float(row.get('sugars_100g')),
-                    'saturated_fat': safe_float(row.get('saturated-fat_100g')),
-                    'salt': safe_float(row.get('salt_100g')),
-                    'fiber': safe_float(row.get('fiber_100g')),
-                    'fruits_vegetables_legumes': safe_float(row.get('fruits-vegetables-nuts-estimate-from-ingredients_100g')),
-                    'proteins': safe_float(row.get('proteins_100g')),
-                    'is_beverage': row.get('category') == 'Beverages',
-                    'is_water': row.get('category') == 'Water',
-                    'is_fat_oil_nuts_seeds': row.get('category') == 'Fats/Nuts/Oil/Seeds',
-                    'is_red_meat_product': row.get('category') == 'Red Meat',
-                    'is_cheese': row.get('category') in ('Cheese', 'Dairy')
-                }
+                # Check if the product contains any nutritional composition or is water
+                if (row.get('category') == 'Water' or 
+                    any(row.get(nutrient) for nutrient in ['energy_100g', 'sugars_100g', 'saturated-fat_100g', 'salt_100g', 'fiber_100g', 'proteins_100g']) or 
+                    (safe_float(row.get('fruits-vegetables-nuts-estimate-from-ingredients_100g')) > 0)):
+                    nutriscore_data_ref = {
+                        'energy': safe_float(row.get('energy_100g')),
+                        'sugars': safe_float(row.get('sugars_100g')),
+                        'saturated_fat': safe_float(row.get('saturated-fat_100g')),
+                        'salt': safe_float(row.get('salt_100g')),
+                        'fiber': safe_float(row.get('fiber_100g')),
+                        'fruits_vegetables_legumes': safe_float(row.get('fruits-vegetables-nuts-estimate-from-ingredients_100g')),
+                        'proteins': safe_float(row.get('proteins_100g')),
+                        'is_beverage': row.get('category') == 'Beverages',
+                        'is_water': row.get('category') == 'Water',
+                        'is_fat_oil_nuts_seeds': row.get('category') == 'Fats/Nuts/Oil/Seeds',
+                        'is_red_meat_product': row.get('category') == 'Red Meat',
+                        'is_cheese': row.get('category') in ('Cheese', 'Dairy')
+                    }
 
-                nutriscore_data_ref['components'] = {'positive': [], 'negative': []}
-                
-                nutriscore_score = compute_nutriscore_score_2023(nutriscore_data_ref)
-                nutriscore_grade = compute_nutriscore_grade_2023(nutriscore_score,
-                                                                nutriscore_data_ref['is_beverage'],
-                                                                nutriscore_data_ref['is_water'],
-                                                                nutriscore_data_ref['is_fat_oil_nuts_seeds'])
-                
-                row['nutriscore_score_final'] = round_to_max_decimal_places(nutriscore_score, 1)
-                row['nutriscore_grade_final'] = nutriscore_grade
+                    nutriscore_data_ref['components'] = {'positive': [], 'negative': []}
+                    
+                    nutriscore_score = compute_nutriscore_score_2023(nutriscore_data_ref)
+                    nutriscore_grade = compute_nutriscore_grade_2023(nutriscore_score,
+                                                                    nutriscore_data_ref['is_beverage'],
+                                                                    nutriscore_data_ref['is_water'],
+                                                                    nutriscore_data_ref['is_fat_oil_nuts_seeds'])
+                    
+                    row['nutriscore_score_final'] = round_to_max_decimal_places(nutriscore_score, 1)
+                    row['nutriscore_grade_final'] = nutriscore_grade
+                else:
+                    row['nutriscore_score_final'] = 'N/A'
+                    row['nutriscore_grade_final'] = 'Nutri-Score is not applicable'
             
             writer.writerow(row)
 
 # Example usage
-process_csv_file('foodDataset.csv', 'LatestNutriScore.csv')
+process_csv_file('output_hsr.csv', 'LatestNutriScore2.csv')

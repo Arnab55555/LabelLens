@@ -30,7 +30,7 @@ def create_similarity_matrix(df):
     
     return cosine_sim
 
-def recommend_similar_products(product_index, cosine_sim, df, num_recommendations=5):
+def recommend_similar_products(product_index, cosine_sim, df, num_recommendations=5, print_output=True):
     """
     Recommend similar products based on cosine similarity.
     """
@@ -46,9 +46,10 @@ def recommend_similar_products(product_index, cosine_sim, df, num_recommendation
     # Sort products by similarity score
     sorted_similar_products = sorted(similar_products, key=lambda x: x[1], reverse=True)[:num_recommendations]
     
-    print(f"\nTop {num_recommendations} similar products to {df.iloc[product_index]['product_name']} (Category: {product_category}, Nutri-Score: {df.iloc[product_index]['nutriscore_grade_final']}):")
-    for i, score in sorted_similar_products:
-        print(f"{df.iloc[i]['product_name']} (Similarity Score: {score:.4f})")
+    if print_output:
+        print(f"\nTop {num_recommendations} similar products to {df.iloc[product_index]['product_name']} (Category: {product_category}, Nutri-Score: {df.iloc[product_index]['nutriscore_grade_final']}):")
+        for i, score in sorted_similar_products:
+            print(f"{df.iloc[i]['product_name']} (Similarity Score: {score:.4f})")
 
     return sorted_similar_products
 
@@ -56,30 +57,24 @@ def recommend_better_alternative(product_index, cosine_sim, df, num_recommendati
     """
     Recommend better alternative products based on Nutri-Score grade.
     """
-    similar_products = list(enumerate(cosine_sim[product_index]))
-    
-    # Filter products by the same category
-    product_category = df.iloc[product_index]['category']
-    similar_products = [item for item in similar_products if df.iloc[item[0]]['category'] == product_category]
-    
-    # Remove the original product from the list
-    similar_products = [item for item in similar_products if item[0] != product_index]
+    # Get the top similar products without printing them
+    similar_products = recommend_similar_products(product_index, cosine_sim, df, num_recommendations, print_output=False)
     
     # Get the Nutri-Score grade of the original product
     original_grade = df.iloc[product_index]['nutriscore_grade_final']
     
-    # Find better alternatives
-    better_alternatives = [item for item in similar_products if df.iloc[item[0]]['nutriscore_grade_final'] < original_grade]
+    # Find better alternatives from the similar products
+    better_alternatives = [item for item in similar_products if df.iloc[item[0]]['nutriscore_grade_final'] < original_grade and df.iloc[item[0]]['nutriscore_grade_final'] != 'Nutri-Score is not applicable']
     
     if better_alternatives:
         # Sort better alternatives by similarity score
         sorted_better_alternatives = sorted(better_alternatives, key=lambda x: x[1], reverse=True)[:num_recommendations]
         
-        print("\nTop 5 better alternative products:")
+        print("\nTop better alternative products:")
         for i, score in sorted_better_alternatives:
             print(f"{df.iloc[i]['product_name']} (Similarity Score: {score:.4f}, Nutri-Score: {df.iloc[i]['nutriscore_grade_final']})")
     else:
-        print("\nNo alternative product available")
+        print("\nNo better alternative product available")
 
 # ====== PERFORMANCE EVALUATION FUNCTIONS ======
 def evaluate_recommendation_system(df, cosine_sim, num_samples=50, num_recommendations=5):
@@ -138,21 +133,22 @@ def evaluate_recommendation_system(df, cosine_sim, num_samples=50, num_recommend
 # ====== MAIN SCRIPT ======
 if __name__ == "__main__":
     # Load data from CSV file
-    df = load_data_from_csv(r'LatestNutriScore.csv')  # Update with actual path
+    df = load_data_from_csv(r'C:\\Users\\Arnab\\OneDrive\\Desktop\\MajorProject\\LatestNutriScore2.csv')  # Update with actual path
 
     # Ensure necessary columns exist
     if {'category', 'ingredients_text', 'product_name', 'nutriscore_grade_final'}.issubset(df.columns):
         # Create cosine similarity matrix using TF-IDF
         cosine_sim = create_similarity_matrix(df)
 
-        # Example: Get recommendations for a product at index 62
-        product_index = 65
+        # Example: Get recommendations for a product at index 65
+        product_index = 76
         recommend_similar_products(product_index, cosine_sim, df, num_recommendations=5)
         
-        # Example: Get better alternative recommendations for the product at index 62
+        # Example: Get better alternative recommendations for the product at index 65
         recommend_better_alternative(product_index, cosine_sim, df, num_recommendations=5)
 
         # Evaluate the system
         evaluate_recommendation_system(df, cosine_sim, num_samples=50, num_recommendations=5)
     else:
         print("The dataset must contain 'category', 'ingredients_text', 'product_name', and 'nutriscore_grade_final' columns.")
+        

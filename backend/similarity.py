@@ -141,7 +141,7 @@ if __name__ == "__main__":
         cosine_sim = create_similarity_matrix(df)
 
         # Example: Get recommendations for a product at index 65
-        product_index = 76
+        product_index = 76  # 1189 for better product example
         recommend_similar_products(product_index, cosine_sim, df, num_recommendations=5)
         
         # Example: Get better alternative recommendations for the product at index 65

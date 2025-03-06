@@ -12,19 +12,19 @@ df['HealthStarRating'] = pd.to_numeric(df['HealthStarRating'], errors='coerce')
 nutriscore_mapping = {'a': 100, 'b': 80, 'c': 60, 'd': 40, 'e': 20}
 
 # Convert Nutri-Score grades to percentages
-df['NutriScore_Percentage'] = df['nutriscore_grade_final.1'].str.lower().map(nutriscore_mapping)
+df['NutriScore_Percentage'] = df['nutriscore_grade_final'].str.lower().map(nutriscore_mapping)
 
 # Convert HSR to percentage (0.5 to 5.0 range mapped to 0-100)
 df['HSR_Percentage'] = ((df['HealthStarRating'] - 0.5) / (5.0 - 0.5)) * 100
 
 # Filter category = cheese (assuming there is a category column in the dataset)
-df_cheese = df[df['category'] == 'General Food']
+df_cheese = df[df['category'] == 'Fat/Nuts/Oil/Seeds']
 
 # Compute absolute difference
 df_cheese['Difference'] = abs(df_cheese['NutriScore_Percentage'] - df_cheese['HSR_Percentage'])
 
 # Set threshold for significant difference (adjustable threshold)
-df_cheese_filtered = df_cheese[df_cheese['Difference'] > 20]
+df_cheese_filtered = df_cheese[df_cheese['Difference'] > 25]
 
 # Sort by difference for better visualization
 df_cheese_filtered = df_cheese_filtered.sort_values(by='Difference', ascending=False)
@@ -51,7 +51,7 @@ ax.set_xticks(x)
 ax.set_xticklabels(df_cheese_filtered['product_name'], rotation=45, ha='right')
 ax.set_ylabel('Percentage (%)')
 ax.set_ylim(0, 120)  # Ensure Y-axis is from 0 to 120 for better annotation space
-ax.set_title('Nutri-Score vs Health Star Rating (Oats & Other Foods)')
+ax.set_title('Nutri-Score vs Health Star Rating (Fats/Nuts/Oil/Seeds)')
 ax.legend()
 
 plt.tight_layout()

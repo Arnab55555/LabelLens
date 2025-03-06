@@ -44,7 +44,7 @@ import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 
 # Load the CSV file
-df = pd.read_csv("output_hsr.csv")  # Replace with your CSV file path
+df = pd.read_csv("latestNutriScore2.csv")  # Replace with your CSV file path
 
 # Mapping lowercase Nutri-Score grades ('a', 'b', 'c', 'd', 'e') to percentage values
 nutriscore_mapping = {'a': 100, 'b': 75, 'c': 50, 'd': 25, 'e': 0}

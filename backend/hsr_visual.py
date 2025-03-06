@@ -80,7 +80,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Load the dataset
-df = pd.read_csv('output_hsr.csv')
+df = pd.read_csv('LatestNutriScore2.csv')
 
 # Convert HealthStarRating and HSRTotalPoints to numeric, coercing errors to NaN
 df['HealthStarRating'] = pd.to_numeric(df['HealthStarRating'], errors='coerce')

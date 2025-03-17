@@ -15,7 +15,7 @@ export type RootStackParamList = {
     AddProduct:undefined;
     ProductScreen:{ ProductId:string };
   };
-const Stack = createNativeStackNavigator<RootStackParamList>()
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function App(): React.JSX.Element {
 

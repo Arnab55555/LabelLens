@@ -26,9 +26,9 @@ export default function ProductScreen({ navigation, route }: ProductScreenProps)
           <Card.Title>{product.product_name}</Card.Title>
           <Card.Divider />
           <View style={styles.productViewWrapper}>
-            <Card containerStyle={styles.thirdCardContainer}>
+            <Card containerStyle={styles.imageCardContainer}>
               <Image
-                style={styles.ProductImageContainer}
+                style={styles.ProductImage}
                 source={productUrl}
                 resizeMode='contain'
               />
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     width:100,
     height:66
   },
-  ProductImageContainer: {
+  ProductImage: {
     width: '100%',
     height: '100%',
   },
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
   },
-  thirdCardContainer: {
+  imageCardContainer: {
     margin:0,
     marginRight: 10,
     width: '50%',

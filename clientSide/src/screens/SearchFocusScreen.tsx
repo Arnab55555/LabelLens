@@ -7,7 +7,7 @@ import { SearchBar } from '@rneui/themed';
 import axios from 'axios';
 import { Card, Image } from '@rneui/base';
 
-type SearchFocusScreenProp = NativeStackScreenProps<StackTabParamList, 'SearchFocusScreen'>;
+
 
 export type Product = {
   _id: string;
@@ -157,6 +157,8 @@ export type Product = {
   nutriscore_grade_final?: string;
 };
 
+type SearchFocusScreenProp = NativeStackScreenProps<StackTabParamList, 'SearchFocusScreen'>;
+
 export default function SearchFocusScreen({ navigation }: SearchFocusScreenProp): React.JSX.Element {
 
   const [search, setSearch] = useState<string>('');
@@ -192,7 +194,7 @@ export default function SearchFocusScreen({ navigation }: SearchFocusScreenProp)
     }
   }
 
-  const handleProductPress=(item:Product,productUrl:string)=>{
+  const handleProductPress=(item:Product,productUrl:any)=>{
     navigation.navigate('ProductScreen',{
       product:item,
       productUrl:productUrl
@@ -200,7 +202,11 @@ export default function SearchFocusScreen({ navigation }: SearchFocusScreenProp)
   }
 
   const handleSubmit = ()=>{
-
+    navigation.navigate('ProductListScreen',{
+      searchText:search,
+      productsRef:productListRef.current,
+      products:productList
+    })
   }
   return (
     <SafeAreaView style={styles.container}>

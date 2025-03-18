@@ -4,6 +4,7 @@ import SearchFocusScreen from '../screens/SearchFocusScreen'
 import BottomTab from './BottomTab'
 import ProductScreen from '../screens/ProductScreen'
 import { Product } from '../screens/SearchFocusScreen'
+import ProductListScreen from '../screens/ProductListScreen'
 
 export type StackTabParamList = {
     MainScreen:undefined,
@@ -15,9 +16,11 @@ export type StackTabParamList = {
     ProductScreen:{
         product:Product,
         productUrl:any
-    };
+    },
     ProductListScreen:{
-        search:String
+        searchText:string,
+        productsRef:Product[]  | null
+        products:Product[] | null
     }
 }
 
@@ -29,6 +32,7 @@ export default function HomeNavigator(): React.JSX.Element{
             <homeStack.Screen name='MainScreen' component={BottomTab} options={{ headerShown:false }}/>
             <homeStack.Screen name='SearchFocusScreen' component={SearchFocusScreen} options={{ title:'Search' }}/>
             <homeStack.Screen name='ProductScreen' component={ProductScreen} options={{ title:'Product' }}/>
+            <homeStack.Screen name='ProductListScreen' component={ProductListScreen} options={{title:'Products'}} />
         </homeStack.Navigator>
     )
 }

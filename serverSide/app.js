@@ -11,7 +11,7 @@ const port = process.env.PORT || 8000
 
 connectDB(mongo_url)
 .then(()=>console.log("MongoDB Connected"))
-.catch((error)=>console.log("Error Occured"))
+.catch((error)=>console.log("Error Occured",error))
 
 app.use('/api/product',productRouter)
 

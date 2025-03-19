@@ -46,7 +46,7 @@ export default function HomeScreen({navigation}:HomescreenProps): React.JSX.Elem
     ]
 
     const searchFocus=()=>{
-      navigation.navigate('SearchFocusScreen')
+      navigation.navigate('ProductSearchScreen')
     }
     const updateSearch = (text:string)=>{ setSearch(text) }
   return(

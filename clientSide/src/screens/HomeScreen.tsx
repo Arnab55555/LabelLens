@@ -10,7 +10,6 @@ type HomescreenProps = NativeStackScreenProps<StackTabParamList,'Home'>
 
 export default function HomeScreen({navigation}:HomescreenProps): React.JSX.Element{
     const tabBarHeight = useBottomTabBarHeight()
-    const [search,setSearch] = useState("")
     const categories = [
       {
         id:'1',
@@ -48,7 +47,6 @@ export default function HomeScreen({navigation}:HomescreenProps): React.JSX.Elem
     const searchFocus=()=>{
       navigation.navigate('ProductSearchScreen')
     }
-    const updateSearch = (text:string)=>{ setSearch(text) }
   return(
     <SafeAreaView style={styles.container}>
             <FlatList 
@@ -59,8 +57,7 @@ export default function HomeScreen({navigation}:HomescreenProps): React.JSX.Elem
               ListHeaderComponent={()=>(
                 <SearchBar
                   placeholder='Search for Packaged Food'
-                  onChangeText={ updateSearch }
-                  value={search}
+                  value={""}
                   containerStyle={ styles.searchBarContainer }
                   inputContainerStyle={ styles.searchBarInput }
                   platform='android'

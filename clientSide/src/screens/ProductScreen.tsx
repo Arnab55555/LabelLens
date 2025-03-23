@@ -43,6 +43,23 @@ export default function ProductScreen({ navigation, route }: ProductScreenProps)
             </View>
           </View>
         </Card>
+
+        {/* Big 7 Nutritional Breakdown */}
+        <Card containerStyle={styles.nutritionCardContainer}>
+            <Card.Title>Nutritional Breakdown</Card.Title>
+            <Card.Divider />
+            <View style={styles.nutritionList}>
+            <Text style={styles.nutritionItem}>Energy: {product.energy_kcal_100g || 0.0} kcal</Text>
+            <Text style={styles.nutritionItem}>Fat: {product.energy_from_fat_100g || 0.0} g</Text>
+            <Text style={styles.nutritionItem}>Saturated Fat: {product.saturated_fat_100g || 0.0} g</Text>
+            <Text style={styles.nutritionItem}>Carbohydrates: {product.carbohydrates_100g || 0.0} g</Text>
+            <Text style={styles.nutritionItem}>Total Sugars: {product.sugars_100g || 0.0} g</Text>
+            <Text style={styles.nutritionItem}>Added Sugars: {product.added_sugars_100g || 0.0} g</Text>
+            <Text style={styles.nutritionItem}>Fiber: {product.fiber_100g || 0.0} g</Text>
+            <Text style={styles.nutritionItem}>Proteins: {product.proteins_100g || 0.0} g</Text>
+            <Text style={styles.nutritionItem}>Sodium: {product.sodium_100g || 0.0} g</Text>
+            </View>
+          </Card>
       </ScrollView>
     </SafeAreaView>
   )
@@ -81,5 +98,18 @@ const styles = StyleSheet.create({
     alignItems:'center',
     width: '48%',
   },
+  nutritionCardContainer: {
+    marginTop: 20,
+    borderRadius: 10,
+    padding: 10,
+  },
+  nutritionList: {
+    flexDirection: 'column',
+    padding: 5,
+  },
+  nutritionItem: {
+    fontSize: 16,
+    marginVertical: 3,
+  }
 })
 

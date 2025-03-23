@@ -6,7 +6,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from flask_pymongo import PyMongo
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb+srv://shahiliyas289:foodproducts123@cluster0.lpd4a.mongodb.net/FoodLabel?retryWrites=true&w=majority&appName=Cluster0"
+app.config["MONGO_URI"] = " " #Add the uri of the MongoDB Atlas
 
 mongo = PyMongo(app)
 products_collection = mongo.db.productinfos

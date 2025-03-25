@@ -28,7 +28,7 @@ export default function ProductScreen({ navigation, route }: ProductScreenProps)
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.40.120:5001/recommend_better_alternatives/${product.code}`,
+          `http://10.0.7.170:5001/recommend_better_alternatives/${product.code}`,
         );
         setBetterAlternative(response.data);
       } catch (error) {
@@ -67,6 +67,23 @@ export default function ProductScreen({ navigation, route }: ProductScreenProps)
             </View>
           </View>
         </Card>
+
+        {/* Big 7 Nutritional Breakdown */}
+        <Card containerStyle={styles.nutritionCardContainer}>
+            <Card.Title>Nutritional Breakdown</Card.Title>
+            <Card.Divider />
+            <View style={styles.nutritionList}>
+            <Text style={styles.nutritionItem}>Energy: {product.energy_kcal_100g || 0.0} kcal</Text>
+            <Text style={styles.nutritionItem}>Fat: {product.energy_from_fat_100g || 0.0} g</Text>
+            <Text style={styles.nutritionItem}>Saturated Fat: {product.saturated_fat_100g || 0.0} g</Text>
+            <Text style={styles.nutritionItem}>Carbohydrates: {product.carbohydrates_100g || 0.0} g</Text>
+            <Text style={styles.nutritionItem}>Total Sugars: {product.sugars_100g || 0.0} g</Text>
+            <Text style={styles.nutritionItem}>Added Sugars: {product.added_sugars_100g || 0.0} g</Text>
+            <Text style={styles.nutritionItem}>Fiber: {product.fiber_100g || 0.0} g</Text>
+            <Text style={styles.nutritionItem}>Proteins: {product.proteins_100g || 0.0} g</Text>
+            <Text style={styles.nutritionItem}>Sodium: {product.sodium_100g || 0.0} g</Text>
+            </View>
+          </Card>
 
         {/* Better Alternatives Section */}
         {betterAlternative.length > 0 && (
@@ -149,6 +166,26 @@ const styles = StyleSheet.create({
     alignItems:'center',
     width: '48%',
   },
+
+  nutritionItem: {
+    fontSize: 16,
+    marginVertical: 3,
+  },
+  nutritionCardContainer: {
+      marginTop: 20,
+      borderRadius: 10,
+      padding: 10,
+      paddingHorizontal: 10,
+    },
+
+    nutritionList: {
+      flexDirection: 'column',
+      width: 120,
+      marginRight: 10,
+      borderRadius: 10,
+      padding: 5,
+      elevation: 0,
+    },
 
   
 

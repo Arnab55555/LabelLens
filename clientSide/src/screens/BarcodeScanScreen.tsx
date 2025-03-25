@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, SafeAreaView, StyleSheet} from 'react-native';
+import {View, Text, SafeAreaView, StyleSheet, TouchableOpacity} from 'react-native';
 import {
   Camera,
   Code,
@@ -36,7 +36,7 @@ export default function BarcodeScanScreen({
   useEffect(() => {
     const fetchProduct = async () => {
       const response = await axios.get(
-        `http://192.168.0.100:3000/api/product/${barCode}`,
+        `http://10.0.7.170:3000/api/product/${barCode}`,
       );
       console.log(response.data)
       setProduct(response.data);
@@ -98,6 +98,14 @@ export default function BarcodeScanScreen({
           const NutriScoreImageUrl = NutriScore ? nutriScoreImages[NutriScore] : null;
           return (
             <Card containerStyle={{ backgroundColor:'transparent', borderWidth:0, padding:0,flex:1,elevation:0, justifyContent:'flex-end'}}>
+            <TouchableOpacity
+              onPress={() => {
+                setIsCameraActive(false); 
+                navigation.push('ProductScreen', {
+                product: product,
+                productUrl: { uri: product.image_url },
+              })}}
+            >
             <Card
               containerStyle={{margin:0,borderRadius: 10, elevation: 0, marginBottom:10}}
               wrapperStyle={{flexDirection:'row'}}>
@@ -138,6 +146,7 @@ export default function BarcodeScanScreen({
                 />
               </Card>
             </Card>
+            </TouchableOpacity>
             </Card>
           );
         })()}

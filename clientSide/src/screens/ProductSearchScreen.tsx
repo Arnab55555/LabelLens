@@ -37,7 +37,7 @@ export default function ProductSearchScreen({
   const fetchProducts = async (text: string) => {
     try {
       const response = await axios.get(
-        `http://192.168.40.120:3000/api/product/search?q=${text}`,
+        `http://10.0.7.170:3000/api/product/search?q=${text}`,
       );
       setProductList(response.data);
     } catch (error) {

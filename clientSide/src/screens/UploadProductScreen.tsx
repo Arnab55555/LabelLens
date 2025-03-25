@@ -86,7 +86,7 @@ export default function UploadProductScreen({navigation,route}:UploadProductScre
     formData.append('barCode', Number(barCode));
 
     try {
-      const response = await axios.post('http://192.168.0.100:3000/api/product/upload', formData, {
+      const response = await axios.post('http://10.0.7.170:3000/api/product/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

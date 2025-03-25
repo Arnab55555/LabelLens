@@ -5,6 +5,7 @@ import BottomTab from './BottomTab'
 import ProductScreen from '../screens/ProductScreen'
 import { Product } from '../screens/ProductSearchScreen'
 import BarcodeScanScreen from '../screens/BarcodeScanScreen'
+import UploadProductScreen from '../screens/UploadProductScreen'
 
 export type StackTabParamList = {
     MainScreen:undefined,
@@ -17,7 +18,10 @@ export type StackTabParamList = {
         product:Product,
         productUrl:any
     },
-    BarcodeScanScreen:undefined
+    BarcodeScanScreen:undefined,
+    UploadProductScreen:{
+        barCode:string | null
+    }
 }
 
 const homeStack = createNativeStackNavigator<StackTabParamList>()
@@ -29,6 +33,7 @@ export default function HomeNavigator(): React.JSX.Element{
             <homeStack.Screen name='ProductSearchScreen' component={ProductSearchScreen} options={{ title:'Search' }}/>
             <homeStack.Screen name='ProductScreen' component={ProductScreen} options={{ title:'Product' }}/>
             <homeStack.Screen name='BarcodeScanScreen' component={BarcodeScanScreen}/>
+            <homeStack.Screen name='UploadProductScreen'  component={UploadProductScreen}/>
         </homeStack.Navigator>
     )
 }

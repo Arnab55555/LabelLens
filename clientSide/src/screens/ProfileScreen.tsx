@@ -90,7 +90,7 @@ export default function ProfileScreen(): React.JSX.Element {
     let bmr = 10 * weight + 6.25 * heightInCm - 5 * age + 5;
 
     // Adjust for activity level
-    const activityMultipliers = {
+    const activityMultipliers: Record<string,number> = {
       Sedentary: 1.2,
       Light: 1.375,
       Moderate: 1.55,

@@ -4,10 +4,13 @@ import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 from flask_pymongo import PyMongo
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = " " #Add the uri of the MongoDB Atlas
-
+app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 mongo = PyMongo(app)
 products_collection = mongo.db.productinfos
 
@@ -38,8 +41,7 @@ def get_data():
 
 
 def load_data_from_mongodb():
-    products = list(products_collection.find({}, {"_id": 0, "code": 1, "product_name": 1, "category": 1, "ingredients_text": 1, "nutriscore_grade_final": 1}))
-    print(products)
+    products = list(products_collection.find({}, {"_id": 0, "code": 1, "product_name": 1, "category": 1, "ingredients_text": 1, "nutriscore_grade_final": 1, "image_url": 1}))
     return pd.DataFrame(products)
 
 def combine_features(row):
@@ -87,9 +89,13 @@ def recommend_better_alternatives_api(code):
         better_alternatives = recommend_better_alternative(product_index, cosine_similarity_matrix, df) 
 
         response = [{
+            "code": int(df.iloc[i]['code']),
             "product_name": df.iloc[i]['product_name'],
-            "nutriscore_grade_final": df.iloc[i]['nutriscore_grade_final']
-        } for i, score in better_alternatives
+            "nutriscore_grade_final": df.iloc[i]['nutriscore_grade_final'],
+            "image_url": df.iloc[i]['image_url'] if pd.notna(df.iloc[i]['image_url']) else None,
+            
+        } 
+        for i, score in better_alternatives
         ]
 
         return jsonify(response)

@@ -6,12 +6,17 @@ import { productRouter } from './routes/product.js'
 dotenv.config()
 const app = express()
 
+app.use(cors());
+app.use(express.json());
+
 const mongo_url = process.env.MONGO_URL
 const port = process.env.PORT || 8000
 
 connectDB(mongo_url)
 .then(()=>console.log("MongoDB Connected"))
 .catch((error)=>console.log("Error Occured",error))
+
+
 
 app.use('/api/product',productRouter)
 

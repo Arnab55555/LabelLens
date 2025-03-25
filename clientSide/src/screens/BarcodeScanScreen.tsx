@@ -9,7 +9,7 @@ import {
 } from 'react-native-vision-camera';
 import {StackTabParamList} from '../navigation/HomeNavigator';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {Card, Image} from '@rneui/themed';
+import {Button, Card, Image} from '@rneui/themed';
 import {Product} from './ProductSearchScreen';
 import axios from 'axios';
 type BarcodeScanScreenProps = NativeStackScreenProps<
@@ -24,6 +24,9 @@ export default function BarcodeScanScreen({
   const [scanned, setScanned] = useState<boolean>(false);
   const [barCode, setBarCode] = useState<string | null>(null);
   const [product, setProduct] = useState<Product | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isCameraActive, setIsCameraActive] = useState(true);
+  
   console.log('Barcode Scanner is opened');
 
   useEffect(() => {
@@ -37,6 +40,7 @@ export default function BarcodeScanScreen({
       );
       console.log(response.data)
       setProduct(response.data);
+      setIsLoading((prev)=>false)
     };
     fetchProduct();
   }, [barCode]);
@@ -64,12 +68,16 @@ export default function BarcodeScanScreen({
     );
   }
   
+  const handleOnPress = ()=>{
+    setIsCameraActive(false); 
+    navigation.navigate('UploadProductScreen',{barCode: barCode})
+  }
   return (
     <>
       <Camera
         style={StyleSheet.absoluteFill}
         device={device}
-        isActive={true}
+        isActive={isCameraActive}
         codeScanner={codeScanner}
       />
       {product &&
@@ -128,6 +136,52 @@ export default function BarcodeScanScreen({
                   source={NutriScoreImageUrl}
                   resizeMode="contain"
                 />
+              </Card>
+            </Card>
+            </Card>
+          );
+        })()}
+        {barCode && !product && !isLoading && (()=>{
+          const productUrl = require('../assets/images/Image_Not_Available.jpg')
+          return (
+            <Card containerStyle={{ backgroundColor:'transparent', borderWidth:0, padding:0,flex:1,elevation:0, justifyContent:'flex-end'}}>
+            <Card
+              containerStyle={{margin:0,borderRadius: 10, elevation: 0, marginBottom:10}}
+              wrapperStyle={{flexDirection:'row'}}>
+              <Card
+                containerStyle={{
+                  margin: 0,
+                  borderRadius: 10,
+                  elevation: 0,
+                  padding: 5,
+                  width: '50%',
+                }}
+                wrapperStyle={{padding: 0}}>
+                <Image
+                  style={{width: '100%', height: 150}}
+                  source={productUrl}
+                  resizeMode="contain"
+                />
+              </Card>
+              <Card
+                containerStyle={{
+                  margin: 0,
+                  width: '50%',
+                  borderRadius: 10,
+                  elevation: 0,
+                  borderWidth: 0,
+                  alignItems: 'center',
+                }}
+                wrapperStyle={{
+                  flex: 1,
+                  justifyContent: 'space-between',
+                  paddingLeft: 15,
+                }}>
+                <Text>Product Not Found</Text>
+                <Button 
+                  size="lg"
+                  onPress={handleOnPress}
+                >Upload Product</Button>
               </Card>
             </Card>
             </Card>

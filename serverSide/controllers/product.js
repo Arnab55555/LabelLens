@@ -103,3 +103,16 @@ export async function handleGetProductById(req,res){
         return res.status(500).json({message:"Error while fetching product by id",error:`${error}`})
     }
 }
+
+export async function handleGetProductByCategory(req,res){
+    const { category } = req.params
+    try{
+        const product = await products.find({
+            category:category
+        })
+        console.log(product)
+        return res.status(200).send(product)
+    }catch(error){
+        return res.status(500).json({message:"Error while fetching product by id",error:`${error}`})
+    }
+}

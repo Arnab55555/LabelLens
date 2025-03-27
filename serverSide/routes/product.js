@@ -2,6 +2,7 @@ import express from 'express'
 import { handleUserSearch } from '../controllers/product.js'
 import { handleGetProductById } from '../controllers/product.js'
 import { uploadProductImages } from '../controllers/product.js';
+import { handleGetProductByCategory } from '../controllers/product.js'
 
 import multer from 'multer';
 
@@ -23,3 +24,6 @@ productRouter.route('/upload')
     { name: 'nutritionImage'},
     { name: 'ingredientsImage'},
   ]), uploadProductImages)
+
+productRouter.route('/category/:category')
+.get(handleGetProductByCategory)

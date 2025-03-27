@@ -1,8 +1,8 @@
 import { products } from "../models/product.js"
-import { extractTextFromImage, analyzeTextWithGemini } from '../utils/apiHelpers.js';
 import cloudinary from "../cloudinaryConfig.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from 'dotenv';
+import axios from "axios";
 
 dotenv.config();
 
@@ -47,33 +47,109 @@ export const uploadProductImages = async (req, res) => {
         const ingredientsImageUrl = await uploadToCloudinary(req.files.ingredientsImage[0]);
 
         // Extract data using Gemini API
-        const frontImageData = await analyzeImageWithGemini(req.files.frontImage[0].buffer, "Extract the product name and brand from the following image. Return a JSON object with all the details.");
+        const frontImageData = await analyzeImageWithGemini(req.files.frontImage[0].buffer, `Extract the product name and brand from the following image. Return a JSON object with all the details. Refer this schema to create json 
+        {
+        brand: string,
+        product_name: string
+        }`);
 
-        const nutritionImageData = await analyzeImageWithGemini(req.files.nutritionImage[0].buffer, "Extract the big 7 nutrients (calories, fat, carbs, protein, fiber, sugar, salt, fruits/vegetables/legumes, saturated fat) from the following nutritional information. Return a JSON object with all the details.");
+        const nutritionImageData = await analyzeImageWithGemini(req.files.nutritionImage[0].buffer, `Extract the big 7 nutrients (calories, fat, carbs, protein, fiber, sugar, salt, fruits/vegetables/legumes, saturated fat) from the following nutritional information. Return a JSON object with all the details. Refer this schema to create json
+        {
+        calories: number, // Energy content in kcal (default to 0 if not found)
+        fat: number, // Total fat in grams (default to 0 if not found)
+        carbs: number, // Total carbohydrates in grams (default to 0 if not found)
+        protein: number, // Protein content in grams (default to 0 if not found)
+        fiber: number, // Fiber content in grams (default to 0 if not found)
+        sugar: number, // Sugar content in grams (default to 0 if not found)
+        salt: number, // Salt content in grams (default to 0 if not provided, calculated as sodium (mg) * 2.5 / 1000)
+        fruits_vegetables_legumes: number, // fruits vegetables legumes content in grams (default to 0 if not found)
+        saturated_fat: number // Saturated fat content in grams (default to 0 if not found)
+        }
+            `);
 
-        const ingredientsImageData = await analyzeImageWithGemini(req.files.ingredientsImage[0].buffer, "Extract the ingredients, additives, and allergens from the following ingredient list. For each, provide a brief description in two lines. Return a JSON object with all the details.");
+        const ingredientsImageData = await analyzeImageWithGemini(req.files.ingredientsImage[0].buffer, `Extract the ingredients, additives, and allergens from the following ingredient list. For each, provide a brief description in two lines. Assign a category to this product (product_category) but it should only belong to these categories (Beverages, Cheese, Dairy, Fat/Nuts/Oil/Seeds, General Food, Red Meat, Water).Assign one more specific product_category (specific_product_category) and Return a JSON object with all the details.
+        Refer this schema to create json
+        ingredients: [
+            {
+                name: string,
+                description: string
+            }
+        ],
+        additives: [
+            {
+                name: string, 
+                description: string 
+            }
+        ],
+        allergens: [
+            {
+                name: string, 
+                description: string 
+            }
+        ],
+        product_category: string, 
+        specific_product_category: string
+        }
+            `);
 
-        // Save product to MongoDB
-        // const productSaved = await products.create({
-        //     code: req.body.barCode,
-        //     image_url: frontImageUrl,
-        //     image_nutrition_url: nutritionImageUrl,
-        //     image_ingredients_url: ingredientsImageUrl,
-        //     product_info: frontImageData,
-        //     nutrition_info: nutritionImageData,
-        //     ingredients_info: ingredientsImageData
-        // });
-
+        
+        const nutriData = {
+            energy_100g: nutritionImageData.calories*4,
+            fat_100g: nutritionImageData.fat,
+            saturated_fat_100g: nutritionImageData.saturated_fat,
+            carbohydrates_100g: nutritionImageData.carbs,
+            sugars_100g: nutritionImageData.sugar,
+            proteins_100g: nutritionImageData.protein,
+            salt_100g: nutritionImageData.salt,
+            fruits_vegetables_nuts_estimate_from_ingredients_100g:nutritionImageData.fruits_vegetables_legumes,
+            fiber: nutritionImageData.fiber,
+            category: ingredientsImageData.product_category,
+        };
+        
+        const response = await axios.post('http://192.168.0.100:5001/api/nutriscore', nutriData);
+        
+        console.log(response)
+        //Save product to MongoDB
+        try{
+        const productSaved = await products.create({
+            code: req.body.barCode,
+            product_name:frontImageData.product_name,
+            brands:frontImageData.brand,
+            image_url: frontImageUrl,
+            image_nutrition_url: nutritionImageUrl,
+            image_ingredients_url: ingredientsImageUrl,
+            energy_kcal_100g:nutritionImageData.calories,
+            energy_100g:nutritionImageData.calories*4,
+            fat_100g:nutritionImageData.fat,
+            saturated_fat_100g:nutritionImageData.saturated_fat,
+            carbohydrates_100g:nutritionImageData.carbs,
+            proteins_100g:nutritionImageData.protein,
+            fiber_100g:nutritionImageData.fiber,
+            sugars_100g:nutritionImageData.sugar,
+            salt_100g:nutritionImageData.salt,
+            fruits_vegetables_nuts_estimate_from_ingredients_100g:nutritionImageData.fruits_vegetables_legumes,
+            category:ingredientsImageData.product_category,
+            product_category:ingredientsImageData.specific_product_category,
+            nutriscore_score_final:response.data.nutriscore_score,
+            nutriscore_grade_final:response.data.nutriscore_grade,
+            ingredients_info: ingredientsImageData.ingredients,
+            additives_info:ingredientsImageData.additives,
+            allergens_info:ingredientsImageData.allergens,
+            isNewProduct:true
+        });
+    }catch(error){
+        console.error('Error uploading and analyzing:', error);
+        return res.status(500).json({ error:"Error occured while adding data to mongodb"})
+    }
         console.log(frontImageData);
         console.log(nutritionImageData)
         console.log(ingredientsImageData)
-        res.status(200).json({ message: 'Images uploaded and analyzed successfully!' });
+        return res.status(200).json({ message: 'Images uploaded and analyzed successfully!' });
     } catch (error) {
         console.error('Error uploading and analyzing:', error);
-        res.status(500).json({ error: 'Image upload or analysis failed' });
+        return res.status(500).json({ error: 'Image upload or analysis failed' });
     }
 };
-
 
 
 export async function handleUserSearch(req,res){

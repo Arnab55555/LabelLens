@@ -1,4 +1,30 @@
 import mongoose from 'mongoose'
+const allergenSchema = new mongoose.Schema({
+    name: {
+      type: String,
+    },
+    description: {
+      type: String,
+    }
+  });
+
+  const additiveSchema = new mongoose.Schema({
+    name: {
+      type: String,
+    },
+    description: {
+      type: String,
+    },
+  });
+
+  const ingredientSchema = new mongoose.Schema({
+    name: {
+      type: String,
+    },
+    description: {
+      type: String,
+    },
+  });
 
 const productSchema = new mongoose.Schema({
     code:{
@@ -144,10 +170,15 @@ const productSchema = new mongoose.Schema({
     nitrate_100g: Number,
     acidity_100g: Number,
     category: String,
+    product_category:String,
     HealthStarRating: mongoose.Schema.Types.Mixed,
     HSRTotalPoints: mongoose.Schema.Types.Mixed,
     nutriscore_score_final: mongoose.Schema.Types.Mixed,
-    nutriscore_grade_final: String
+    nutriscore_grade_final: String,
+    allergens_info:[allergenSchema],
+    additives_info:[additiveSchema],
+    ingredients_info:[ingredientSchema],
+    isNewProduct:Boolean
 });
 
 export const products = mongoose.model('productinfo', productSchema);

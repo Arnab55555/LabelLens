@@ -37,7 +37,7 @@ export default function ProductSearchScreen({
   const fetchProducts = async (text: string) => {
     try {
       const response = await axios.get(
-        `http://10.0.7.170:3000/api/product/search?q=${text}`,
+        `http://192.168.0.100:3000/api/product/search?q=${text}`,
       );
       setProductList(response.data);
     } catch (error) {
@@ -392,4 +392,21 @@ export type Product = {
   HSRTotalPoints?: any;
   nutriscore_score_final?: any;
   nutriscore_grade_final?: string;
+  allergens_info:[allergenSchema],
+    additives_info:[additiveSchema],
+    ingredients_info:[ingredientSchema],
+    isNewProduct:Boolean
 };
+
+export type allergenSchema={
+  name?:string,
+  description?: string 
+}
+export type additiveSchema={
+  name?:string,
+  description?: string 
+}
+export type ingredientSchema={
+  name?:string,
+  description?: string 
+}

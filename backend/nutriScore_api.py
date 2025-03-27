@@ -214,20 +214,20 @@ def safe_float(value):
 
 @app.route('/api/nutriscore', methods=['POST'])
 def calculate_nutriscore():
-    # data = request.json
-
-    data = {
-        "energy_100g": 1734,
-        "fat_100g":10.49,
-        "saturated_fat_100g":2.15,
-        "carbohydrates_100g": 69.02,
-        "sugars_100g": 2.01,
-        "proteins_100g": 10.96,
-        "salt_100g":0.00785,
-        "fruits_vegetables_nuts_estimate_from_ingredients_100g": 0,
-        "fiber": 10.39,
-        "category": "General Food",
-    }
+    data = request.json
+    print(data)
+    # data = {
+    #     "energy_100g": 1734,
+    #     "fat_100g":10.49,
+    #     "saturated_fat_100g":2.15,
+    #     "carbohydrates_100g": 69.02,
+    #     "sugars_100g": 2.01,
+    #     "proteins_100g": 10.96,
+    #     "salt_100g":0.00785,
+    #     "fruits_vegetables_nuts_estimate_from_ingredients_100g": 0,
+    #     "fiber": 10.39,
+    #     "category": "General Food",
+    # }
 
     # Validate input
     # required_fields = ['energy_kcal_100g', 'sugars_100g', 'saturated_fat_100g', 'salt', 'fiber', 'fruits_vegetables_legumes', 'proteins', 'is_beverage', 'is_water', 'is_fat_oil_nuts_seeds']

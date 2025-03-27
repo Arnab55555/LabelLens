@@ -17,7 +17,7 @@ const classifyNutrient = (nutrient: string, value: number) => {
     energy_kcal_100g: { value: 500, unit: 'kcal' },
     saturated_fat_100g: { value: 5, unit: 'g' },
     sugars_100g: { value: 10, unit: 'g' },
-    sodium_100g: { value: 0.5, unit: 'g' }, // 500mg = 0.5g
+    salt_100g: { value: 0.5, unit: 'g' }, // 500mg = 0.5g
     added_sugars_100g: { value: 0, unit: 'g' }, // Any added sugar is concerning
   };
 
@@ -106,7 +106,7 @@ export default function ProductScreen({ navigation, route }: ProductScreenProps)
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.239.4/recommend_better_alternatives/${product.code}`,
+          `http://192.168.0.100:5001/recommend_better_alternatives/${product.code}`,
         );
         setBetterAlternative(response.data);
       } catch (error) {
@@ -115,7 +115,7 @@ export default function ProductScreen({ navigation, route }: ProductScreenProps)
       }
     };
     fetchProducts();
-  }, [])
+  },[])
 
   const NutriScoreImageUrl = NutriScore ? nutriScoreImages[NutriScore] : null
   
@@ -151,14 +151,14 @@ export default function ProductScreen({ navigation, route }: ProductScreenProps)
           <View style={styles.nutritionList}>
             {[
               { label: 'Energy', key: 'energy_kcal_100g', value: product.energy_kcal_100g || 0 },
-              { label: 'Fat', key: 'energy_from_fat_100g', value: product.energy_from_fat_100g || 0 },
+              { label: 'Fat', key: 'fat_100g', value: product.fat_100g || 0 },
               { label: 'Saturated Fat', key: 'saturated_fat_100g', value: product.saturated_fat_100g || 0 },
               { label: 'Carbohydrates', key: 'carbohydrates_100g', value: product.carbohydrates_100g || 0 },
               { label: 'Total Sugars', key: 'sugars_100g', value: product.sugars_100g || 0 },
               { label: 'Added Sugars', key: 'added_sugars_100g', value: product.added_sugars_100g || 0 },
               { label: 'Fiber', key: 'fiber_100g', value: product.fiber_100g || 0 },
               { label: 'Proteins', key: 'proteins_100g', value: product.proteins_100g || 0 },
-              { label: 'Sodium', key: 'sodium_100g', value: product.sodium_100g || 0 },
+              { label: 'Salt', key: 'salt_100g', value: product.salt_100g || 0 },
             ].map((item) => {
               const classification = classifyNutrient(item.key, item.value);
               return (
@@ -190,7 +190,7 @@ export default function ProductScreen({ navigation, route }: ProductScreenProps)
         {product.ingredients_info && product.ingredients_info.length > 0 && (
           <ExpandableSection 
             title="Ingredients" 
-            items={product.ingredients_info.map(i => ({name: i.name, description: i.description}))} 
+            items={product.ingredients_info.map(i => ({name: i.name ?? 'Default Name', description: i.description ?? 'No description available'}))} 
           />
         )}
 
@@ -198,7 +198,7 @@ export default function ProductScreen({ navigation, route }: ProductScreenProps)
         {product.allergens_info && product.allergens_info.length > 0 && (
           <ExpandableSection 
             title="Allergens" 
-            items={product.allergens_info.map(a => ({name: a.name, description: a.description}))} 
+            items={product.allergens_info.map(a => ({name: a.name ?? 'Default Name', description: a.description ?? 'No description available'}))} 
           />
         )}
 
@@ -206,7 +206,7 @@ export default function ProductScreen({ navigation, route }: ProductScreenProps)
         {product.additives_info && product.additives_info.length > 0 && (
           <ExpandableSection 
             title="Additives" 
-            items={product.additives_info.map(a => ({name: a.name, description: a.description}))} 
+            items={product.additives_info.map(a => ({name: a.name ?? 'Default Name', description: a.description ?? 'No description available'}))} 
           />
         )}
 
